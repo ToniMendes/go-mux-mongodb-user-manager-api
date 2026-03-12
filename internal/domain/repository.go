@@ -4,7 +4,8 @@ type MongoRepository interface {
 	Create(*User) error
 	GetAll() ([]User, error)
 	GetByEmail(email string) (*User, error)
-	UpdateName(name string, email string) (model *User, err error)
+	UpdateName(name string, email string) error
+	UpdateEmail(newEmail string, email string) error
 }
 
 type HashingRepository interface {

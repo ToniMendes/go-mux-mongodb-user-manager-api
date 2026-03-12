@@ -24,3 +24,9 @@ type UserUpdateNameResponse struct {
 	password string
 	NewName  string
 }
+type UserUpdateEmailResponse struct {
+	Id       bson.ObjectID `bson:"_id,omitempty"`
+	Email    string
+	password string
+	NewEmail string
+}

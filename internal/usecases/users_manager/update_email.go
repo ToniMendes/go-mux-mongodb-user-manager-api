@@ -4,23 +4,23 @@ import (
 	"go-mux-mongodb-user-manager-api/internal/domain"
 )
 
-type UpdateNameServices struct {
+type UpdateEmailServices struct {
 	Collection      domain.MongoRepository
 	HashingServices domain.HashingRepository
 }
 
-func NewUpdateNameServices(collection domain.MongoRepository, hashingServices domain.HashingRepository) *UpdateNameServices {
-	return &UpdateNameServices{
+func NewUpdateEmailServices(collection domain.MongoRepository, hashingServices domain.HashingRepository) *UpdateEmailServices {
+	return &UpdateEmailServices{
 		Collection:      collection,
 		HashingServices: hashingServices,
 	}
 }
 
-func (r *UpdateNameServices) ExecUpdateName(inputDto UserUpdateNameInput) (map[string]interface{}, error) {
-	model := domain.NewUpdateName(
+func (r *UpdateNameServices) ExecUpdateEmail(inputDto UserUpdateEmailInput) (map[string]interface{}, error) {
+	model := domain.NewUpdateEmail(
 		inputDto.Email,
 		inputDto.Password,
-		inputDto.NewName,
+		inputDto.NewEmail,
 	)
 
 	result, err := r.Collection.GetByEmail(model.Email)
@@ -33,15 +33,15 @@ func (r *UpdateNameServices) ExecUpdateName(inputDto UserUpdateNameInput) (map[s
 		return map[string]interface{}{}, err
 	}
 
-	err = r.Collection.UpdateName(model.NewName, model.Email)
+	err = r.Collection.UpdateEmail(model.NewEmail, model.Email)
 	if err != nil {
 		return map[string]interface{}{}, err
 	}
 
-	response := UserUpdateNameResponse{
-		Id:      result.Id,
-		Email:   result.Email,
-		NewName: model.NewName,
+	response := UserUpdateEmailResponse{
+		Id:       result.Id,
+		Email:    result.Email,
+		NewEmail: model.NewEmail,
 	}
 
 	newResponse := map[string]interface{}{
@@ -49,8 +49,8 @@ func (r *UpdateNameServices) ExecUpdateName(inputDto UserUpdateNameInput) (map[s
 			"user": map[string]interface{}{
 				"id":    response.Id.Hex(),
 				"email": response.Email,
-				"new_name": map[string]string{
-					"name": response.NewName,
+				"new_email": map[string]string{
+					"email": response.NewEmail,
 				},
 			},
 		},

@@ -9,9 +9,32 @@ import (
 type User struct {
 	Id           bson.ObjectID `bson:"_id,omitempty"`
 	Name         string
+	NewName      string
 	Email        string
+	NewEmail     string
 	Password     string
+	NewPassword  string
 	PasswordHash string
+}
+
+func NewUpdateEmail(email, password, newEmail string) *User {
+	if len(password) < 8 {
+		return nil
+	}
+
+	if !strings.Contains(email, "@") {
+		return nil
+	}
+
+	if email == "" || password == "" || newEmail == "" {
+		return nil
+	}
+
+	return &User{
+		Email:    email,
+		Password: password,
+		NewEmail: newEmail,
+	}
 }
 
 func NewUpdateName(email, password, newName string) *User {
@@ -34,7 +57,7 @@ func NewUpdateName(email, password, newName string) *User {
 	return &User{
 		Email:    email,
 		Password: password,
-		Name:     newName,
+		NewName:  newName,
 	}
 }
 

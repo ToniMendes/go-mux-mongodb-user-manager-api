@@ -112,3 +112,27 @@ func (repo *UserUseCasesRepository) UpdateName(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
+
+func (repo *UserUseCasesRepository) UpdateEmail(w http.ResponseWriter, r *http.Request) {
+	var inputDto users_manager.UserUpdateEmailInput
+
+	if err := json.NewDecoder(r.Body).Decode(&inputDto); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := users_manager.Validate(inputDto); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response, err := repo.usecase.ExecUpdateEmail(inputDto)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}

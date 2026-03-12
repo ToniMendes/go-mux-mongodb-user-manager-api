@@ -7,6 +7,7 @@ import (
 type WriterOnlyRepositoryUseCases interface {
 	ExecCreate(users_manager.UserCreateInput) (users_manager.UserCreateResponse, error)
 	ExecUpdateName(users_manager.UserUpdateNameInput) (map[string]interface{}, error)
+	ExecUpdateEmail(users_manager.UserUpdateEmailInput) (map[string]interface{}, error)
 }
 
 type ReadOnlyRepositoryUseCases interface {

@@ -83,19 +83,32 @@ func (repo *MongoRepository) GetByEmail(email string) (*domain.User, error) {
 	return model, nil
 }
 
-func (repo *MongoRepository) UpdateName(name, email string) (*domain.User, error) {
+func (repo *MongoRepository) UpdateName(name, email string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"email": email}
 	doc := bson.M{"$set": bson.M{"name": name}}
 
-	var model *domain.User
-
-	err := repo.Collection.FindOneAndUpdate(ctx, filter, doc).Decode(&model)
+	_, err := repo.Collection.UpdateOne(ctx, filter, doc)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return model, nil
+	return nil
+}
+
+func (repo *MongoRepository) UpdateEmail(newEmail, email string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"email": email}
+	doc := bson.M{"$set": bson.M{"email": newEmail}}
+
+	_, err := repo.Collection.UpdateOne(ctx, filter, doc)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
